@@ -13,7 +13,10 @@ func generatePDF(user User, contest Contest) {
 	begin := time.Now()
 	m := pdf.NewMaroto(consts.Portrait, consts.A4)
 	m.SetPageMargins(10, 15, 10)
-	m.SetDefaultFontFamily(consts.Courier)
+	m.SetFontLocation("font/")
+	m.AddUTF8Font("TeXFont", consts.Normal, "lmroman10-regular.ttf")
+	m.AddUTF8Font("TeXFont", consts.Bold, "lmroman10-bold.ttf")
+	m.SetDefaultFontFamily("TeXFont")
 
 	m.SetAliasNbPages("{nb}")
 	m.SetFirstPageNb(1)
@@ -94,7 +97,7 @@ func generatePDF(user User, contest Contest) {
 			})
 		})
 		m.Col(6, func() {
-			m.Text(contest.date.Format(time.RFC822), props.Text{
+			m.Text(contest.date, props.Text{
 				Size:  15,
 				Align: consts.Left,
 			})
