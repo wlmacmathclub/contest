@@ -1,7 +1,5 @@
 package main
 
-import "time"
-
 type User struct {
 	email         string
 	firstName     string
@@ -12,5 +10,5 @@ type User struct {
 
 type Contest struct {
 	name string
-	date time.Time
+	date string
 }
