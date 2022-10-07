@@ -11,8 +11,10 @@ import (
 )
 
 func main() {
+	icon, _ := fyne.LoadResourceFromPath("assets/images/private.png")
 	contestApp := app.New()
-	appWindow := contestApp.NewWindow("Grid Layout")
+	appWindow := contestApp.NewWindow("Math Contest Permission Form Generator")
+	appWindow.SetIcon(icon)
 	appWindow.Resize(fyne.NewSize(1280, 720))
 
 	text1 := canvas.NewText("1", color.White)

@@ -13,7 +13,7 @@ func generatePDF(user User, contest Contest) {
 	begin := time.Now()
 	m := pdf.NewMaroto(consts.Portrait, consts.A4)
 	m.SetPageMargins(10, 15, 10)
-	m.SetFontLocation("font/")
+	m.SetFontLocation("assets/font/")
 	m.AddUTF8Font("TeXFont", consts.Normal, "lmroman10-regular.ttf")
 	m.AddUTF8Font("TeXFont", consts.Bold, "lmroman10-bold.ttf")
 	m.SetDefaultFontFamily("TeXFont")
@@ -177,3 +177,16 @@ func generatePDF(user User, contest Contest) {
 	end := time.Now()
 	fmt.Println(end.Sub(begin))
 }
+
+/*func main() {
+	generatePDF(User{
+		email:         "email",
+		firstName:     "Harry",
+		lastName:      "Xiang",
+		firstTeacher:  "Ms. Gugoiu",
+		secondTeacher: "Ms. Gugoiu",
+	}, Contest{
+		name: "IMO",
+		date: "November 69th, 2077",
+	})
+}*/
