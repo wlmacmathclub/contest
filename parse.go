@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func parseCSV(path string) []User {
+func parseCSV(path string) ([]User, string) {
 	file, _ := os.Open(path)
 	defer file.Close()
 
@@ -13,7 +13,7 @@ func parseCSV(path string) []User {
 	recs, err := csvRdr.ReadAll()
 
 	if err != nil {
-		panic("Error reading CSV file")
+		return make([]User, 0), "Error reading CSV file"
 	}
 
 	users := make([]User, 0)
@@ -35,5 +35,5 @@ func parseCSV(path string) []User {
 		}
 	}
 
-	return users
+	return users, ""
 }
