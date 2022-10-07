@@ -172,7 +172,7 @@ func generatePDF(user User, contest Contest) {
 		})
 	})
 
-	m.OutputFileAndClose(fmt.Sprintf("cache/%s_%s_%s_%d%d%d.pdf", contest.name, user.firstName, user.lastName, contest.date.Year(), contest.date.Month(), contest.date.Day()))
+	m.OutputFileAndClose(fmt.Sprintf("cache/%s_%s%s.pdf", contest.name, user.firstName, user.lastName))
 
 	end := time.Now()
 	fmt.Println(end.Sub(begin))
