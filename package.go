@@ -12,3 +12,12 @@ type Contest struct {
 	name string
 	date string
 }
+
+type MailConfig struct {
+	server   string
+	port     string
+	from     string
+	password string
+	subject  string
+	body     string
+}
