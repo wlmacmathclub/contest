@@ -14,10 +14,10 @@ type Contest struct {
 }
 
 type MailConfig struct {
-	server   string
-	port     string
-	from     string
-	password string
-	subject  string
-	body     string
+	email      string
+	name       string
+	publickey  string
+	privatekey string
+	subject    string
+	body       string
 }
