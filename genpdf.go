@@ -2,15 +2,13 @@ package main
 
 import (
 	"fmt"
-	"time"
 
 	"github.com/johnfercher/maroto/pkg/consts"
 	"github.com/johnfercher/maroto/pkg/pdf"
 	"github.com/johnfercher/maroto/pkg/props"
 )
 
-func generatePDF(user User, contest Contest) {
-	begin := time.Now()
+func generatePDF(user User, contest Contest) bool {
 	m := pdf.NewMaroto(consts.Portrait, consts.A4)
 	m.SetPageMargins(10, 15, 10)
 	m.SetFontLocation("assets/font/")
@@ -172,21 +170,6 @@ func generatePDF(user User, contest Contest) {
 		})
 	})
 
-	m.OutputFileAndClose(fmt.Sprintf("cache/%s_%s%s.pdf", contest.name, user.firstName, user.lastName))
-
-	end := time.Now()
-	fmt.Println(end.Sub(begin))
+	err := m.OutputFileAndClose(fmt.Sprintf("cache/%s_%s%s.pdf", contest.name, user.firstName, user.lastName))
+	return err == nil
 }
-
-/*func main() {
-	generatePDF(User{
-		email:         "email",
-		firstName:     "Harry",
-		lastName:      "Xiang",
-		firstTeacher:  "Ms. Gugoiu",
-		secondTeacher: "Ms. Gugoiu",
-	}, Contest{
-		name: "IMO",
-		date: "November 69th, 2077",
-	})
-}*/
