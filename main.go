@@ -1,10 +1,10 @@
 package main
 
 import (
+	"errors"
+	"fmt"
 	"image/color"
-	"os"
 	"strings"
-	"time"
 
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/app"
@@ -24,52 +24,13 @@ func main() {
 	var users []User
 
 	userlisttext := widget.NewLabel("")
-	userlisttext.SetText("Waiting for CSV file selection...")
-	userBox := container.NewScroll(userlisttext)
-	userBoxTitle := canvas.NewText("Contest Participant List", color.White)
-	userBoxTitle.TextSize = 20
-	userBoxTitle.TextStyle = fyne.TextStyle{Bold: true}
-	userBoxContainer := container.NewBorder(container.NewCenter(userBoxTitle), nil, nil, nil, userBox)
-	text2 := canvas.NewText("2", color.White)
-	grid := container.NewHSplit(userBoxContainer, text2)
-	appWindow.SetContent(grid)
+	userlisttext.SetText("No file selected. Click the \"Open File\" button")
 
 	diag := dialog.NewFileOpen(func(uc fyne.URIReadCloser, err error) {
 		if err == nil && uc != nil {
-			//fmt.Println(uc.URI().Path())
 			userlist, err2 := parseCSV(uc.URI().Path())
 			if err2 == "" {
-				//fmt.Print(userlist)
 				users = userlist
-				/*userTable := widget.NewTable(
-					func() (int, int) {
-						return len(userlist), 5
-					},
-					func() fyne.CanvasObject {
-						return widget.NewLabel("N/A")
-					},
-					func(i widget.TableCellID, o fyne.CanvasObject) {
-						o.(*widget.Label).SetText(func() string {
-							//man fyne sucks balls lol
-							if i.Col == 0 {
-								return userlist[i.Row].email
-							} else if i.Col == 1 {
-								return userlist[i.Row].firstName
-							} else if i.Col == 2 {
-								return userlist[i.Row].lastName
-							} else if i.Col == 3 {
-								return userlist[i.Row].firstTeacher
-							} else {
-								if userlist[i.Row].secondTeacher == "" {
-									return "N/A"
-								} else {
-									return userlist[i.Row].secondTeacher
-								}
-							}
-						}())
-					})
-				userBox = container.NewScroll(userTable)
-				userBox.Refresh()*/
 				userlisttext.SetText(func() string {
 					if len(users) == 0 {
 						return "No user records found. Is the file formatted correctly?"
@@ -85,12 +46,39 @@ func main() {
 				userlisttext.SetText(err2)
 			}
 		} else {
-			userlisttext.SetText("File dialog closed. Terminating process...")
-			time.Sleep(3 * time.Second)
-			os.Exit(0)
+			userlisttext.SetText("Error reading selected file")
 		}
 	}, appWindow)
-	diag.Show()
+
+	openFileButton := widget.NewButton("Open File", func() {
+		diag.Show()
+	})
+
+	userBox := container.NewScroll(userlisttext)
+	userBoxTitle := canvas.NewText("Contest Participant List", color.White)
+	userBoxTitle.TextSize = 20
+	userBoxTitle.TextStyle = fyne.TextStyle{Bold: true}
+	userBoxContainer := container.NewBorder(container.NewBorder(nil, nil, nil, openFileButton, container.NewCenter(userBoxTitle)), nil, nil, nil, userBox)
+
+	contestName := widget.NewEntry()
+	form := &widget.Form{
+		Items: []*widget.FormItem{
+			{
+				Text:   "Contest Name",
+				Widget: contestName,
+			},
+		},
+		OnSubmit: func() {
+			fmt.Println(contestName.Text)
+			dialog.NewError(errors.New(contestName.Text), appWindow).Show()
+		},
+	}
+	formTitle := canvas.NewText("Settings", color.White)
+	formTitle.TextSize = 20
+	formTitle.TextStyle = fyne.TextStyle{Bold: true}
+	formContainer := container.NewBorder(container.NewCenter(formTitle), nil, nil, nil, form)
+	grid := container.NewHSplit(userBoxContainer, formContainer)
+	appWindow.SetContent(grid)
 
 	appWindow.ShowAndRun()
 }
