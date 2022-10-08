@@ -1,46 +1,45 @@
 package main
 
 import (
-	"bytes"
 	"encoding/base64"
 	"fmt"
 	"io/ioutil"
-	"mime/multipart"
-	"net/http"
-	"net/smtp"
 	"strings"
+
+	"github.com/mailjet/mailjet-apiv3-go"
 )
 
 func mailUser(user User, contest Contest, config MailConfig) bool {
-	msgbuf := bytes.NewBuffer(nil)
-	message := "From: " + config.from +
-		"\nTo: " + user.email +
-		"\nSuject: " + textReplace(user, contest, config.subject) +
-		"\nMIME-Version: 1.0\n"
-	msgbuf.WriteString(message)
-	writer := multipart.NewWriter(msgbuf)
-	msgbuf.WriteString(fmt.Sprintf("Content-Type: multipart/mixed; boundary=%s\n", writer.Boundary()))
-	msgbuf.WriteString(fmt.Sprintf("--%s\n", writer.Boundary()))
-	msgbuf.WriteString("\n" + textReplace(user, contest, config.body) + "\n")
 	filename := fmt.Sprintf("%s_%s%s.pdf", contest.name, user.firstName, user.lastName)
 	filebuf, _ := ioutil.ReadFile("cache/" + filename)
-
-	msgbuf.WriteString(fmt.Sprintf("\n\n--%s\n", writer.Boundary()))
-	msgbuf.WriteString(fmt.Sprintf("Content-Type: %s\n", http.DetectContentType(filebuf)))
-	msgbuf.WriteString("Content-Transfer-Encoding: base64\n")
-	msgbuf.WriteString(fmt.Sprintf("Content-Disposition: attachment; filename=%s\n", filename))
-	b := make([]byte, base64.StdEncoding.EncodedLen(len(filebuf)))
-	base64.StdEncoding.Encode(b, filebuf)
-	msgbuf.Write(b)
-	msgbuf.WriteString("--")
-
-	err := smtp.SendMail(config.server+config.port,
-		smtp.PlainAuth("", config.from, config.password, config.server),
-		config.from, []string{user.email}, []byte(msgbuf.Bytes()))
-
-	if err != nil {
-		fmt.Println(err)
+	content := base64.StdEncoding.EncodeToString(filebuf)
+	mailjetClient := mailjet.NewMailjetClient(config.publickey, config.privatekey)
+	messagesInfo := []mailjet.InfoMessagesV31{
+		{
+			From: &mailjet.RecipientV31{
+				Email: config.email,
+				Name:  config.name,
+			},
+			To: &mailjet.RecipientsV31{
+				mailjet.RecipientV31{
+					Email: user.email,
+					Name:  fmt.Sprintf("%s %s", user.firstName, user.lastName),
+				},
+			},
+			Subject:  textReplace(user, contest, config.subject),
+			HTMLPart: textReplace(user, contest, config.body),
+			Attachments: &mailjet.AttachmentsV31{
+				mailjet.AttachmentV31{
+					ContentType:   "application/pdf",
+					Filename:      filename,
+					Base64Content: content,
+				},
+			},
+		},
 	}
+	messages := mailjet.MessagesV31{Info: messagesInfo}
+	_, err := mailjetClient.SendMailV31(&messages)
+
 	return err == nil
 }
 
