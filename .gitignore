@@ -2,4 +2,5 @@
 *.pdf
 *.csv
 *.log
+*.json
 cache/
