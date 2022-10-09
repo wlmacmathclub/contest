@@ -17,7 +17,7 @@ If building for Windows, make sure to add the following flags to the build comma
 Despite the fact that Fyne can build to nearly all distributions, only Windows, MacOS, and Linux are supported. 
 
 
-### Usage
+## Usage
 
 1. Open the executable (do not move the executable out of its folder as it depends on the assets folder)
 2. Click on the "Open File" button. Make sure you have a compatible CSV file. 
@@ -35,8 +35,16 @@ Despite the fact that Fyne can build to nearly all distributions, only Windows, 
 
     - Contest Name: the name of the contest as it appears on the permission form
     - Contest Date: the date of the contest as it appears on the permission form
-    - Email From: the sending email address. it is recommended that you use `noreply@mackenziemathclub.tk` as it has the appropriate SPF/DKIM records in place (to prevent getting marked as spam/fraud). However, any email address will technically work. 
+    - Email From: the sending email address. It is recommended that you use `noreply@mackenziemathclub.tk` as it has the appropriate SPF/DKIM records in place (to prevent getting marked as spam/fraud). However, any email address will technically work. 
     - Email Name: the name of the sender as it appears on the email. It is recommended to use `Mackenzie Math Club` for consistency.
     - Email Public Key: this is the public api key taken from mailjet
     - Email Private Key: this is the private/secret api key from mailjet
     - Email Subject & Email Body: these fields are self explanatory. However, this program allows you to use some level of templating by replacing some predetermined strings with data. mail.go#L49 shows a complete list.
+5. Send!
+
+
+### Libraries Used
+- Fyne (for the GUI)
+- Maroto (for generating PDFs)
+- Mailjet (for sending emails via the API)
+- Dialog (for file selection dialog because the Fyne default was poorly written)
