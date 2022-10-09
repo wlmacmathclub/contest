@@ -14,6 +14,7 @@ import (
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 
 	nativedialog "github.com/sqweek/dialog"
@@ -25,6 +26,8 @@ func main() {
 	appWindow := contestApp.NewWindow("Math Contest Permission Form Generator")
 	appWindow.SetIcon(icon)
 	appWindow.Resize(fyne.NewSize(1280, 720))
+
+	darkMode := contestApp.Settings().ThemeVariant() == theme.VariantDark
 
 	var users []User
 
@@ -55,7 +58,13 @@ func main() {
 	})
 
 	userBox := container.NewScroll(userlisttext)
-	userBoxTitle := canvas.NewText("Contest Participant List", color.White)
+	userBoxTitle := canvas.NewText("Contest Participant List", func() color.Color {
+		if darkMode {
+			return color.White
+		} else {
+			return color.Black
+		}
+	}())
 	userBoxTitle.TextSize = 20
 	userBoxTitle.TextStyle = fyne.TextStyle{Bold: true}
 	userBoxContainer := container.NewBorder(container.NewBorder(nil, nil, nil, openFileButton, container.NewCenter(userBoxTitle)), nil, nil, nil, userBox)
@@ -69,7 +78,13 @@ func main() {
 		}, appWindow).Show()
 	})
 	form := makeForm(appWindow, &users, contestApp)
-	formTitle := canvas.NewText("Settings", color.White)
+	formTitle := canvas.NewText("Settings", func() color.Color {
+		if darkMode {
+			return color.White
+		} else {
+			return color.Black
+		}
+	}())
 	formTitle.TextSize = 20
 	formTitle.TextStyle = fyne.TextStyle{Bold: true}
 	formContainer := container.NewBorder(container.NewBorder(nil, nil, nil, clearCacheButton, container.NewCenter(formTitle)), nil, nil, nil, form)
