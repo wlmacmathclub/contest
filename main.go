@@ -2,7 +2,9 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"image/color"
+	"os"
 	"regexp"
 	"strings"
 	"time"
@@ -16,6 +18,15 @@ import (
 )
 
 func main() {
+	_, err := os.Stat("cache")
+	if err != nil && os.IsNotExist(err) {
+		os.Mkdir("cache", 0700)
+	}
+	_, err2 := os.Stat("contest.log")
+	if err2 == nil {
+		os.Remove("contest.log")
+	}
+
 	icon, _ := fyne.LoadResourceFromPath("assets/images/private.png")
 	contestApp := app.New()
 	appWindow := contestApp.NewWindow("Math Contest Permission Form Generator")
@@ -61,11 +72,19 @@ func main() {
 	userBoxTitle.TextStyle = fyne.TextStyle{Bold: true}
 	userBoxContainer := container.NewBorder(container.NewBorder(nil, nil, nil, openFileButton, container.NewCenter(userBoxTitle)), nil, nil, nil, userBox)
 
+	clearCacheButton := widget.NewButton("Clear Cache", func() {
+		dialog.NewConfirm("Confirm Cache Clear", "Are you sure you want to clear the cach? All previously generated PDFs will be deleted", func(del bool) {
+			if del {
+				os.RemoveAll("cache")
+				os.Mkdir("cache", 0700)
+			}
+		}, appWindow).Show()
+	})
 	form := makeForm(appWindow, &users, contestApp)
 	formTitle := canvas.NewText("Settings", color.White)
 	formTitle.TextSize = 20
 	formTitle.TextStyle = fyne.TextStyle{Bold: true}
-	formContainer := container.NewBorder(container.NewCenter(formTitle), nil, nil, nil, form)
+	formContainer := container.NewBorder(container.NewBorder(nil, nil, nil, clearCacheButton, container.NewCenter(formTitle)), nil, nil, nil, form)
 	grid := container.NewHSplit(userBoxContainer, formContainer)
 	appWindow.SetContent(grid)
 
@@ -141,14 +160,56 @@ func makeForm(appWindow fyne.Window, users *[]User, app fyne.App) *widget.Form {
 					subject:    emailSubject.Text,
 					body:       emailBody.Text,
 				}
-				for _, user := range *users {
-					generatePDF(user, contest)
-					mailUser(user, contest, config)
+				logw := app.NewWindow("Send Log")
+				logw.Resize(fyne.NewSize(720, 480))
+				logw.Show()
+				logw.SetOnClosed(func() {
+					isSubbed = false
+				})
+				logtext := widget.NewTextGrid()
+				logtext.ShowLineNumbers = true
+				logBox := container.NewScroll(logtext)
+				logw.SetContent(logBox)
+				writeLog(logtext, fmt.Sprintf("Starting generator @ %s ...\n\n[Contest Name]: %s\n[Contest Date]: %s\n[Sending Email]: %s\n[Email Name]: %s\n[Public Key]: %s\n[Private Key]: %s\n[Email Subject]: %s\n[Email Body]: %s\n\n\n", time.Now().Format(time.RFC1123), contest.name, contest.date, config.email, config.name, strings.Repeat("*", len(config.publickey)), strings.Repeat("*", len(config.privatekey)), config.subject, config.body), logBox)
+				for i, user := range *users {
+					if !isSubbed {
+						break
+					}
+					writeLog(logtext, fmt.Sprintf("=============== USER #%d %s %s ===============\nGenerating PDF...\n", i+1, user.firstName, user.lastName), logBox)
+					startpdf := time.Now()
+					pdfSuccess := generatePDF(user, contest)
+					if !pdfSuccess {
+						writeLog(logtext, "There was an error generating the PDF. Skipping mailing. \n\n", logBox)
+					} else {
+						writeLog(logtext, fmt.Sprintf("Generated PDF in %s\nSending mail to %s...\n", time.Since(startpdf), user.email), logBox)
+						mailSuccess := mailUser(user, contest, config)
+						if mailSuccess {
+							writeLog(logtext, "Email sent successfully, sleeping for 5 seconds\n\n", logBox)
+						} else {
+							writeLog(logtext, "There was an error sending the email\n\n", logBox)
+						}
+						time.Sleep(5 * time.Second)
+					}
+				}
+				if !isSubbed {
+					writeLog(logtext, "Sender terminated due to log window being closed. \n", logBox)
+				} else {
+					writeLog(logtext, "Finished sending to all emails! \n\n", logBox)
 					time.Sleep(5 * time.Second)
+					isSubbed = false
+					logw.Close()
 				}
 			}
 		},
 		SubmitText: "SEND EMAILS",
 	}
 	return form
+}
+
+func writeLog(logtext *widget.TextGrid, text string, logbox *container.Scroll) {
+	logtext.SetText(logtext.Text() + text)
+	logbox.ScrollToBottom()
+	f, _ := os.OpenFile("contest.log", os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	f.Write([]byte(text))
+	f.Close()
 }
