@@ -23,7 +23,7 @@ import (
 func main() {
 	icon, _ := fyne.LoadResourceFromPath("assets/images/private.png")
 	contestApp := app.New()
-	appWindow := contestApp.NewWindow("Math Contest Permission Form Generator")
+	appWindow := contestApp.NewWindow("Math Contest Permission Form Generator " + version)
 	appWindow.SetIcon(icon)
 	appWindow.Resize(fyne.NewSize(1280, 720))
 
