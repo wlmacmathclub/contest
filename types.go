@@ -9,20 +9,20 @@ type User struct {
 }
 
 type Contest struct {
-	name string `json:"name"`
-	date string `json:"date"`
+	Name string `json:"name"`
+	Date string `json:"date"`
 }
 
 type MailConfig struct {
-	email      string `json:"email"`
-	name       string `json:"name"`
-	publickey  string `json:"publickey"`
-	privatekey string `json:"privatekey"`
-	subject    string `json:"subject"`
-	body       string `json:"body"`
+	Email      string `json:"email"`
+	Name       string `json:"name"`
+	Publickey  string `json:"publickey"`
+	Privatekey string `json:"privatekey"`
+	Subject    string `json:"subject"`
+	Body       string `json:"body"`
 }
 
 type JsonData struct {
-	contest Contest    `json:"contest"`
-	config  MailConfig `json:"config"`
+	Contest Contest    `json:"contest"`
+	Config  MailConfig `json:"config"`
 }

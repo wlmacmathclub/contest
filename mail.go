@@ -10,15 +10,15 @@ import (
 )
 
 func mailUser(user User, contest Contest, config MailConfig) bool {
-	filename := fmt.Sprintf("%s_%s%s.pdf", contest.name, user.firstName, user.lastName)
+	filename := fmt.Sprintf("%s_%s%s.pdf", contest.Name, user.firstName, user.lastName)
 	filebuf, _ := ioutil.ReadFile("cache/" + filename)
 	content := base64.StdEncoding.EncodeToString(filebuf)
-	mailjetClient := mailjet.NewMailjetClient(config.publickey, config.privatekey)
+	mailjetClient := mailjet.NewMailjetClient(config.Publickey, config.Privatekey)
 	messagesInfo := []mailjet.InfoMessagesV31{
 		{
 			From: &mailjet.RecipientV31{
-				Email: config.email,
-				Name:  config.name,
+				Email: config.Email,
+				Name:  config.Name,
 			},
 			To: &mailjet.RecipientsV31{
 				mailjet.RecipientV31{
@@ -26,8 +26,8 @@ func mailUser(user User, contest Contest, config MailConfig) bool {
 					Name:  fmt.Sprintf("%s %s", user.firstName, user.lastName),
 				},
 			},
-			Subject:  textReplace(user, contest, config.subject),
-			HTMLPart: textReplace(user, contest, config.body),
+			Subject:  textReplace(user, contest, config.Subject),
+			HTMLPart: textReplace(user, contest, config.Body),
 			Attachments: &mailjet.AttachmentsV31{
 				mailjet.AttachmentV31{
 					ContentType:   "application/pdf",
@@ -48,8 +48,8 @@ func textReplace(user User, contest Contest, text string) string {
 	list := [][]string{
 		{"{USER_FIRST_NAME}", user.firstName},
 		{"{USER_LAST_NAME}", user.lastName},
-		{"{CONTEST_NAME}", contest.name},
-		{"{CONTEST_DATE}", contest.date},
+		{"{CONTEST_NAME}", contest.Name},
+		{"{CONTEST_DATE}", contest.Date},
 		{"{USER_EMAIL}", user.email},
 		{"{USER_P1_TEACHER}", user.firstTeacher},
 		{"{USER_P2_TEACHER}", user.secondTeacher},

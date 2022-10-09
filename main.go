@@ -64,7 +64,7 @@ func main() {
 	userBoxContainer := container.NewBorder(container.NewBorder(nil, nil, nil, openFileButton, container.NewCenter(userBoxTitle)), nil, nil, nil, userBox)
 
 	clearCacheButton := widget.NewButton("Clear Cache", func() {
-		dialog.NewConfirm("Confirm Cache Clear", "Are you sure you want to clear the cach? All previously generated PDFs will be deleted", func(del bool) {
+		dialog.NewConfirm("Confirm Cache Clear", "Are you sure you want to clear the cache? All previously generated PDFs will be deleted", func(del bool) {
 			if del {
 				os.RemoveAll("cache")
 				os.Mkdir("cache", 0700)
@@ -95,14 +95,14 @@ func makeForm(appWindow fyne.Window, users *[]User, app fyne.App) *widget.Form {
 
 	iniContest, iniConfig, iniErr := initialize()
 	if iniErr == nil {
-		contestName.SetText(iniContest.name)
-		contestDate.SetText(iniContest.date)
-		email.SetText(iniConfig.email)
-		emailName.SetText(iniConfig.name)
-		emailPubKey.SetText(iniConfig.publickey)
-		emailPrivKey.SetText(iniConfig.privatekey)
-		emailSubject.SetText(iniConfig.subject)
-		emailBody.SetText(iniConfig.body)
+		contestName.SetText(iniContest.Name)
+		contestDate.SetText(iniContest.Date)
+		email.SetText(iniConfig.Email)
+		emailName.SetText(iniConfig.Name)
+		emailPubKey.SetText(iniConfig.Publickey)
+		emailPrivKey.SetText(iniConfig.Privatekey)
+		emailSubject.SetText(iniConfig.Subject)
+		emailBody.SetText(iniConfig.Body)
 	}
 
 	isSubbed := false
@@ -153,16 +153,16 @@ func makeForm(appWindow fyne.Window, users *[]User, app fyne.App) *widget.Form {
 			} else {
 				isSubbed = true
 				contest := Contest{
-					name: contestName.Text,
-					date: contestDate.Text,
+					Name: contestName.Text,
+					Date: contestDate.Text,
 				}
 				config := MailConfig{
-					email:      email.Text,
-					name:       emailName.Text,
-					publickey:  emailPubKey.Text,
-					privatekey: emailPrivKey.Text,
-					subject:    emailSubject.Text,
-					body:       emailBody.Text,
+					Email:      email.Text,
+					Name:       emailName.Text,
+					Publickey:  emailPubKey.Text,
+					Privatekey: emailPrivKey.Text,
+					Subject:    emailSubject.Text,
+					Body:       emailBody.Text,
 				}
 				saveJson(contest, config)
 				logw := app.NewWindow("Send Log")
@@ -175,7 +175,7 @@ func makeForm(appWindow fyne.Window, users *[]User, app fyne.App) *widget.Form {
 				logtext.ShowLineNumbers = true
 				logBox := container.NewScroll(logtext)
 				logw.SetContent(logBox)
-				writeLog(logtext, fmt.Sprintf("Starting generator @ %s ...\n\n[Contest Name]: %s\n[Contest Date]: %s\n[Sending Email]: %s\n[Email Name]: %s\n[Public Key]: %s\n[Private Key]: %s\n[Email Subject]: %s\n[Email Body]: %s\n\n\n", time.Now().Format(time.RFC1123), contest.name, contest.date, config.email, config.name, strings.Repeat("*", len(config.publickey)), strings.Repeat("*", len(config.privatekey)), config.subject, config.body), logBox)
+				writeLog(logtext, fmt.Sprintf("Starting generator @ %s ...\n\n[Contest Name]: %s\n[Contest Date]: %s\n[Sending Email]: %s\n[Email Name]: %s\n[Public Key]: %s\n[Private Key]: %s\n[Email Subject]: %s\n[Email Body]: %s\n\n\n", time.Now().Format(time.RFC1123), contest.Name, contest.Date, config.Email, config.Name, strings.Repeat("*", len(config.Publickey)), strings.Repeat("*", len(config.Privatekey)), config.Subject, config.Body), logBox)
 				for i, user := range *users {
 					if !isSubbed {
 						break

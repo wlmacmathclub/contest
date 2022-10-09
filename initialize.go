@@ -23,7 +23,7 @@ func initialize() (Contest, MailConfig, error) {
 		jsonBytes, _ := ioutil.ReadAll(jsonFile)
 		data := JsonData{}
 		json.Unmarshal(jsonBytes, &data)
-		return data.contest, data.config, nil
+		return data.Contest, data.Config, nil
 	} else {
 		os.Create("data.json")
 		return Contest{}, MailConfig{}, errors.New("cannot read data.json file")
@@ -32,8 +32,8 @@ func initialize() (Contest, MailConfig, error) {
 
 func saveJson(contest Contest, config MailConfig) {
 	data, _ := json.MarshalIndent(JsonData{
-		contest: contest,
-		config:  config,
+		Contest: contest,
+		Config:  config,
 	}, "", "\t")
 	os.WriteFile("data.json", data, 0644)
 }

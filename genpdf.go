@@ -80,7 +80,7 @@ func generatePDF(user User, contest Contest) bool {
 			})
 		})
 		m.Col(6, func() {
-			m.Text(contest.name, props.Text{
+			m.Text(contest.Name, props.Text{
 				Size:  15,
 				Align: consts.Left,
 			})
@@ -95,7 +95,7 @@ func generatePDF(user User, contest Contest) bool {
 			})
 		})
 		m.Col(6, func() {
-			m.Text(contest.date, props.Text{
+			m.Text(contest.Date, props.Text{
 				Size:  15,
 				Align: consts.Left,
 			})
@@ -170,6 +170,6 @@ func generatePDF(user User, contest Contest) bool {
 		})
 	})
 
-	err := m.OutputFileAndClose(fmt.Sprintf("cache/%s_%s%s.pdf", contest.name, user.firstName, user.lastName))
+	err := m.OutputFileAndClose(fmt.Sprintf("cache/%s_%s%s.pdf", contest.Name, user.firstName, user.lastName))
 	return err == nil
 }
