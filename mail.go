@@ -46,13 +46,13 @@ func mailUser(user User, contest Contest, config MailConfig) bool {
 func textReplace(user User, contest Contest, text string) string {
 	newtext := text
 	list := [][]string{
-		[]string{"{USER_FIRST_NAME}", user.firstName},
-		[]string{"{USER_LAST_NAME}", user.lastName},
-		[]string{"{CONTEST_NAME}", contest.name},
-		[]string{"{CONTEST_DATE}", contest.date},
-		[]string{"{USER_EMAIL}", user.email},
-		[]string{"{USER_P1_TEACHER}", user.firstTeacher},
-		[]string{"{USER_P2_TEACHER}", user.secondTeacher},
+		{"{USER_FIRST_NAME}", user.firstName},
+		{"{USER_LAST_NAME}", user.lastName},
+		{"{CONTEST_NAME}", contest.name},
+		{"{CONTEST_DATE}", contest.date},
+		{"{USER_EMAIL}", user.email},
+		{"{USER_P1_TEACHER}", user.firstTeacher},
+		{"{USER_P2_TEACHER}", user.secondTeacher},
 	}
 	for _, item := range list {
 		newtext = strings.Replace(newtext, item[0], item[1], -1)
