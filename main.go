@@ -164,6 +164,7 @@ func makeForm(appWindow fyne.Window, users *[]User, app fyne.App) *widget.Form {
 					subject:    emailSubject.Text,
 					body:       emailBody.Text,
 				}
+				saveJson(contest, config)
 				logw := app.NewWindow("Send Log")
 				logw.Resize(fyne.NewSize(720, 480))
 				logw.Show()

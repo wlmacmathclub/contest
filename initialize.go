@@ -25,6 +25,15 @@ func initialize() (Contest, MailConfig, error) {
 		json.Unmarshal(jsonBytes, &data)
 		return data.contest, data.config, nil
 	} else {
+		os.Create("data.json")
 		return Contest{}, MailConfig{}, errors.New("cannot read data.json file")
 	}
+}
+
+func saveJson(contest Contest, config MailConfig) {
+	data, _ := json.MarshalIndent(JsonData{
+		contest: contest,
+		config:  config,
+	}, "", "\t")
+	os.WriteFile("data.json", data, 0644)
 }
