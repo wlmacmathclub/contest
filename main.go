@@ -95,7 +95,7 @@ func makeForm(appWindow fyne.Window, users *[]User, app fyne.App) *widget.Form {
 	contestName := widget.NewEntry()
 	contestDate := widget.NewEntry()
 	email := widget.NewEntry()
-	mailRegExp, _ := regexp.Compile("^\\w+([-+.']\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*$")
+	mailRegExp, _ := regexp.Compile(`^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$`)
 	emailName := widget.NewEntry()
 	emailPubKey := widget.NewEntry()
 	emailPrivKey := widget.NewEntry()
