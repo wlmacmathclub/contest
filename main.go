@@ -15,6 +15,8 @@ import (
 	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/widget"
+
+	nativedialog "github.com/sqweek/dialog"
 )
 
 func main() {
@@ -29,9 +31,10 @@ func main() {
 	userlisttext := widget.NewLabel("")
 	userlisttext.SetText("No file selected. Click the \"Open File\" button")
 
-	diag := dialog.NewFileOpen(func(uc fyne.URIReadCloser, err error) {
-		if err == nil && uc != nil {
-			userlist, err2 := parseCSV(uc.URI().Path())
+	openFileButton := widget.NewButton("Open File", func() {
+		filename, err := nativedialog.File().Filter("Comma Separated Values (.csv)", "csv").Title("Open Contest Participants List").Load()
+		if err == nil && filename != "" {
+			userlist, err2 := parseCSV(filename)
 			if err2 == "" {
 				users = userlist
 				userlisttext.SetText(func() string {
@@ -48,13 +51,7 @@ func main() {
 			} else {
 				userlisttext.SetText(err2)
 			}
-		} else {
-			userlisttext.SetText("Error reading selected file")
 		}
-	}, appWindow)
-
-	openFileButton := widget.NewButton("Open File", func() {
-		diag.Show()
 	})
 
 	userBox := container.NewScroll(userlisttext)
