@@ -9,15 +9,15 @@ type User struct {
 }
 
 type Contest struct {
-	name string
-	date string
+	name string `json:"name"`
+	date string `json:"date"`
 }
 
 type MailConfig struct {
-	email      string
-	name       string
-	publickey  string
-	privatekey string
-	subject    string
-	body       string
+	email      string `json:"email"`
+	name       string `json:"name"`
+	publickey  string `json:"publickey"`
+	privatekey string `json:"privatekey"`
+	subject    string `json:"subject"`
+	body       string `json:"body"`
 }
