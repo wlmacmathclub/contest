@@ -18,15 +18,6 @@ import (
 )
 
 func main() {
-	_, err := os.Stat("cache")
-	if err != nil && os.IsNotExist(err) {
-		os.Mkdir("cache", 0700)
-	}
-	_, err2 := os.Stat("contest.log")
-	if err2 == nil {
-		os.Remove("contest.log")
-	}
-
 	icon, _ := fyne.LoadResourceFromPath("assets/images/private.png")
 	contestApp := app.New()
 	appWindow := contestApp.NewWindow("Math Contest Permission Form Generator")
@@ -101,6 +92,19 @@ func makeForm(appWindow fyne.Window, users *[]User, app fyne.App) *widget.Form {
 	emailPrivKey := widget.NewEntry()
 	emailSubject := widget.NewEntry()
 	emailBody := widget.NewMultiLineEntry()
+
+	iniContest, iniConfig, iniErr := initialize()
+	if iniErr == nil {
+		contestName.SetText(iniContest.name)
+		contestDate.SetText(iniContest.date)
+		email.SetText(iniConfig.email)
+		emailName.SetText(iniConfig.name)
+		emailPubKey.SetText(iniConfig.publickey)
+		emailPrivKey.SetText(iniConfig.privatekey)
+		emailSubject.SetText(iniConfig.subject)
+		emailBody.SetText(iniConfig.body)
+	}
+
 	isSubbed := false
 	form := &widget.Form{
 		Items: []*widget.FormItem{

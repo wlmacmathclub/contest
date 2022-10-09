@@ -21,3 +21,8 @@ type MailConfig struct {
 	subject    string `json:"subject"`
 	body       string `json:"body"`
 }
+
+type JsonData struct {
+	contest Contest    `json:"contest"`
+	config  MailConfig `json:"config"`
+}
