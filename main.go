@@ -31,6 +31,35 @@ func main() {
 
 	var users []User
 
+	usertable := widget.NewTable(
+		func() (int, int) {
+			entries := 4
+			if len(users) >= 1 && users[0].secondTeacher != "" {
+				entries = 5
+			}
+			return len(users), entries
+		},
+		func() fyne.CanvasObject {
+			//this determines starting size (todo: change this)
+			return widget.NewLabel("template content")
+		},
+		func(i widget.TableCellID, o fyne.CanvasObject) {
+			switch i.Col {
+			case 0:
+				o.(*widget.Label).SetText(users[i.Row].email)
+			case 1:
+				o.(*widget.Label).SetText(users[i.Row].firstName)
+			case 2:
+				o.(*widget.Label).SetText(users[i.Row].lastName)
+			case 3:
+				o.(*widget.Label).SetText(users[i.Row].firstTeacher)
+			case 4:
+				o.(*widget.Label).SetText(users[i.Row].secondTeacher)
+			}
+		})
+	//usertable.Hide()
+	usertable.SetColumnWidth(0, 400)
+
 	userlisttext := widget.NewLabel("")
 	userlisttext.SetText("No file selected. Click the \"Open File\" button")
 
@@ -44,11 +73,9 @@ func main() {
 					if len(users) == 0 {
 						return "No user records found. Is the file formatted correctly?"
 					} else {
-						var formatstr strings.Builder
-						for _, usr := range users {
-							formatstr.WriteString(usr.email + "\t" + usr.firstName + "\t" + usr.lastName + "\t" + usr.firstTeacher + "\t" + usr.secondTeacher + "\n")
-						}
-						return formatstr.String()
+						//userlisttext.Hide()
+						//usertable.Show()
+						return fmt.Sprintf("%d user records loaded", len(users))
 					}
 				}())
 			} else {
@@ -57,7 +84,7 @@ func main() {
 		}
 	})
 
-	userBox := container.NewScroll(userlisttext)
+	userBox := container.NewScroll(container.NewBorder(userlisttext, nil, nil, nil, usertable))
 	userBoxTitle := canvas.NewText("Contest Participant List", func() color.Color {
 		if darkMode {
 			return color.White
