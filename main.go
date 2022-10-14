@@ -41,7 +41,7 @@ func main() {
 		},
 		func() fyne.CanvasObject {
 			//this determines starting size (todo: change this)
-			return widget.NewLabel("template content")
+			return widget.NewLabel("template content goes here")
 		},
 		func(i widget.TableCellID, o fyne.CanvasObject) {
 			switch i.Col {
@@ -57,7 +57,7 @@ func main() {
 				o.(*widget.Label).SetText(users[i.Row].secondTeacher)
 			}
 		})
-	//usertable.Hide()
+	usertable.Hide()
 	usertable.SetColumnWidth(0, 400)
 
 	userlisttext := widget.NewLabel("")
@@ -74,7 +74,7 @@ func main() {
 						return "No user records found. Is the file formatted correctly?"
 					} else {
 						//userlisttext.Hide()
-						//usertable.Show()
+						usertable.Show()
 						return fmt.Sprintf("%d user records loaded", len(users))
 					}
 				}())
