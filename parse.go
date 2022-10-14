@@ -31,6 +31,20 @@ func parseCSV(path string) ([]User, string) {
 						return ""
 					}
 				}(),
+				thirdTeacher: func() string {
+					if len(person) > 5 {
+						return person[5]
+					} else {
+						return ""
+					}
+				}(),
+				fourthTeacher: func() string {
+					if len(person) > 6 {
+						return person[6]
+					} else {
+						return ""
+					}
+				}(),
 			})
 		}
 	}
