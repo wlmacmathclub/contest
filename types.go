@@ -6,6 +6,8 @@ type User struct {
 	lastName      string
 	firstTeacher  string
 	secondTeacher string
+	thirdTeacher  string
+	fourthTeacher string
 }
 
 type Contest struct {
