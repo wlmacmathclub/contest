@@ -34,8 +34,16 @@ func main() {
 	usertable := widget.NewTable(
 		func() (int, int) {
 			entries := 4
-			if len(users) >= 1 && users[0].secondTeacher != "" {
-				entries = 5
+			if len(users) >= 1 {
+				if users[0].secondTeacher != "" {
+					entries = 5
+				}
+				if users[0].thirdTeacher != "" {
+					entries = 6
+				}
+				if users[0].fourthTeacher != "" {
+					entries = 7
+				}
 			}
 			return len(users), entries
 		},
@@ -55,6 +63,10 @@ func main() {
 				o.(*widget.Label).SetText(users[i.Row].firstTeacher)
 			case 4:
 				o.(*widget.Label).SetText(users[i.Row].secondTeacher)
+			case 5:
+				o.(*widget.Label).SetText(users[i.Row].thirdTeacher)
+			case 6:
+				o.(*widget.Label).SetText(users[i.Row].fourthTeacher)
 			}
 		})
 	usertable.Hide()
