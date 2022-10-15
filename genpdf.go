@@ -43,7 +43,7 @@ func generatePDF(user User, contest Contest) bool {
 	})
 
 	m.RegisterFooter(func() {
-		m.Row(20, func() {
+		m.Row(12, func() {
 			m.Col(0, func() {
 				m.Text("Registration system created by Patrick Lin", props.Text{
 					Size:  12,
@@ -54,10 +54,10 @@ func generatePDF(user User, contest Contest) bool {
 		})
 	})
 
-	m.Row(40, func() {
+	m.Row(28, func() {
 		m.Col(6, func() {
 			m.Text("Student Name: ", props.Text{
-				Top:   20,
+				Top:   10,
 				Size:  15,
 				Align: consts.Right,
 				Style: consts.Bold,
@@ -65,13 +65,13 @@ func generatePDF(user User, contest Contest) bool {
 		})
 		m.Col(6, func() {
 			m.Text(fmt.Sprintf("%s %s", user.firstName, user.lastName), props.Text{
-				Top:   20,
+				Top:   10,
 				Size:  15,
 				Align: consts.Left,
 			})
 		})
 	})
-	m.Row(20, func() {
+	m.Row(18, func() {
 		m.Col(6, func() {
 			m.Text("Contest Name: ", props.Text{
 				Size:  15,
@@ -86,7 +86,7 @@ func generatePDF(user User, contest Contest) bool {
 			})
 		})
 	})
-	m.Row(20, func() {
+	m.Row(18, func() {
 		m.Col(6, func() {
 			m.Text("Contest Date: ", props.Text{
 				Size:  15,
@@ -101,32 +101,45 @@ func generatePDF(user User, contest Contest) bool {
 			})
 		})
 	})
-	m.Row(20, func() {
-		m.Col(6, func() {
-			m.Text("Period 1 Teacher: ", props.Text{
-				Size:  15,
-				Align: consts.Right,
-				Style: consts.Bold,
-			})
+
+	teachers := []Teacher{}
+
+	if user.firstTeacher != "" {
+		teachers = append(teachers, Teacher{
+			period: 1,
+			name:   user.firstTeacher,
 		})
-		m.Col(6, func() {
-			m.Text(user.firstTeacher, props.Text{
-				Size:  15,
-				Align: consts.Left,
-			})
-		})
-	})
+	}
 	if user.secondTeacher != "" {
-		m.Row(20, func() {
+		teachers = append(teachers, Teacher{
+			period: 2,
+			name:   user.secondTeacher,
+		})
+	}
+	if user.thirdTeacher != "" {
+		teachers = append(teachers, Teacher{
+			period: 3,
+			name:   user.thirdTeacher,
+		})
+	}
+	if user.fourthTeacher != "" {
+		teachers = append(teachers, Teacher{
+			period: 4,
+			name:   user.fourthTeacher,
+		})
+	}
+
+	for _, teacher := range teachers {
+		m.Row(18, func() {
 			m.Col(6, func() {
-				m.Text("Period 2 Teacher: ", props.Text{
+				m.Text(fmt.Sprintf("Period %d Teacher: ", teacher.period), props.Text{
 					Size:  15,
 					Align: consts.Right,
 					Style: consts.Bold,
 				})
 			})
 			m.Col(6, func() {
-				m.Text(user.secondTeacher, props.Text{
+				m.Text(teacher.name, props.Text{
 					Size:  15,
 					Align: consts.Left,
 				})
@@ -135,10 +148,10 @@ func generatePDF(user User, contest Contest) bool {
 	}
 
 	m.Row(20, func() {
-		if user.secondTeacher == "" {
+		if len(teachers) == 1 {
 			m.Col(3, func() {})
 			m.Col(6, func() {
-				m.Signature("Period 1 Teacher Signature", props.Font{
+				m.Signature(fmt.Sprintf("Period %d Teacher Signature", teachers[0].period), props.Font{
 					Style: consts.Normal,
 					Size:  15,
 				})
@@ -146,24 +159,52 @@ func generatePDF(user User, contest Contest) bool {
 			m.Col(3, func() {})
 		} else {
 			m.Col(6, func() {
-				m.Signature("Period 1 Teacher Signature", props.Font{
+				m.Signature(fmt.Sprintf("Period %d Teacher Signature", teachers[0].period), props.Font{
 					Style: consts.Normal,
 					Size:  15,
 				})
 			})
 			m.Col(6, func() {
-				m.Signature("Period 2 Teacher Signature", props.Font{
+				m.Signature(fmt.Sprintf("Period %d Teacher Signature", teachers[1].period), props.Font{
 					Style: consts.Normal,
 					Size:  15,
 				})
 			})
 		}
 	})
+	if len(teachers) > 2 {
+		m.Row(10, func() {})
+		m.Row(20, func() {
+			if len(teachers) == 3 {
+				m.Col(3, func() {})
+				m.Col(6, func() {
+					m.Signature(fmt.Sprintf("Period %d Teacher Signature", teachers[2].period), props.Font{
+						Style: consts.Normal,
+						Size:  15,
+					})
+				})
+				m.Col(3, func() {})
+			} else {
+				m.Col(6, func() {
+					m.Signature(fmt.Sprintf("Period %d Teacher Signature", teachers[2].period), props.Font{
+						Style: consts.Normal,
+						Size:  15,
+					})
+				})
+				m.Col(6, func() {
+					m.Signature(fmt.Sprintf("Period %d Teacher Signature", teachers[3].period), props.Font{
+						Style: consts.Normal,
+						Size:  15,
+					})
+				})
+			}
+		})
+	}
 
-	m.Row(40, func() {
+	m.Row(20, func() {
 		m.Col(0, func() {
 			m.Text("If you do not show up to the contest you may penalized!", props.Text{
-				Top:   30,
+				Top:   20,
 				Size:  13,
 				Align: consts.Center,
 			})
@@ -172,4 +213,9 @@ func generatePDF(user User, contest Contest) bool {
 
 	err := m.OutputFileAndClose(fmt.Sprintf("cache/%s_%s%s.pdf", contest.Name, user.firstName, user.lastName))
 	return err == nil
+}
+
+type Teacher struct { //temporary struct used for sorting/formatting
+	period int
+	name   string
 }
