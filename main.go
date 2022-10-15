@@ -70,7 +70,7 @@ func main() {
 			}
 		})
 	usertable.Hide()
-	usertable.SetColumnWidth(0, 400)
+	usertable.SetColumnWidth(0, 500)
 
 	userlisttext := widget.NewLabel("")
 	userlisttext.SetText("No file selected. Click the \"Open File\" button")
