@@ -49,7 +49,7 @@ func main() {
 		},
 		func() fyne.CanvasObject {
 			//this determines starting size (todo: change this)
-			return widget.NewLabel("template content goes here")
+			return widget.NewLabel("template content here")
 		},
 		func(i widget.TableCellID, o fyne.CanvasObject) {
 			switch i.Col {
