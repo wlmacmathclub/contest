@@ -53,6 +53,8 @@ func textReplace(user User, contest Contest, text string) string {
 		{"{USER_EMAIL}", user.email},
 		{"{USER_P1_TEACHER}", user.firstTeacher},
 		{"{USER_P2_TEACHER}", user.secondTeacher},
+		{"{USER_P3_TEACHER}", user.thirdTeacher},
+		{"{USER_P4_TEACHER}", user.fourthTeacher},
 	}
 	for _, item := range list {
 		newtext = strings.Replace(newtext, item[0], item[1], -1)
