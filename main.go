@@ -87,7 +87,7 @@ func main() {
 					} else {
 						//userlisttext.Hide()
 						usertable.Show()
-						return fmt.Sprintf("%d user records loaded", len(users))
+						return fmt.Sprintf("%d user records loaded\nTable format: email, first name, last name, p1 teacher, p2 teacher, p3 teacher, p4 teacher", len(users))
 					}
 				}())
 			} else {
