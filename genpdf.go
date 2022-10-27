@@ -203,7 +203,7 @@ func generatePDF(user User, contest Contest) bool {
 
 	m.Row(20, func() {
 		m.Col(0, func() {
-			m.Text("If you do not show up to the contest you may penalized!", props.Text{
+			m.Text("If you do not show up to the contest you may be penalized!", props.Text{
 				Top:   20,
 				Size:  13,
 				Align: consts.Center,
